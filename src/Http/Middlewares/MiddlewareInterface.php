@@ -1,9 +1,9 @@
 <?php
 
-namespace MiniRest\Framework\Http\Middlewares;
+namespace MiniRestFramework\Http\Middlewares;
 
 use Closure;
-use MiniRest\Framework\Http\Request\Request;
+use MiniRestFramework\Http\Request\Request;
 
 interface MiddlewareInterface
 {

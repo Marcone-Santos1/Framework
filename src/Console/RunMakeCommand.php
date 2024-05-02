@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Console;
+namespace MiniRestFramework\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +34,7 @@ class RunMakeCommand extends Command
                 'src/Http/Controllers',
                 $input,
                 $output,
-                "<?php\n\nnamespace MiniRest\Framework\Http\Controllers;\n\nuse MiniRest\Framework\Http\Request\Request;\nuse MiniRest\Framework\Http\Response\Response;\n\n\nclass {$fileName}\n{\n    // Implemente sua lógica aqui\n}\n"
+                "<?php\n\nnamespace MiniRestFramework\Http\Controllers;\n\nuse MiniRestFramework\Http\Request\Request;\nuse MiniRestFramework\Http\Response\Response;\n\n\nclass {$fileName}\n{\n    // Implemente sua lógica aqui\n}\n"
             );
         }
         else if ($optionFileType === 'Model') {
@@ -42,7 +42,7 @@ class RunMakeCommand extends Command
                 'src/Models',
                 $input,
                 $output,
-                "<?php\n\nnamespace MiniRest\Framework\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\n\nclass {$fileName} extends Model\n{\n    // Implemente sua lógica aqui\n}\n"
+                "<?php\n\nnamespace MiniRestFramework\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\n\nclass {$fileName} extends Model\n{\n    // Implemente sua lógica aqui\n}\n"
             );
         }
         else if ($optionFileType === 'Middleware') {
@@ -50,7 +50,7 @@ class RunMakeCommand extends Command
                 'src/Http/Middlewares',
                 $input,
                 $output,
-                "<?php\n\nnamespace MiniRest\Framework\Http\Middlewares;\n\n\nclass {$fileName} implements MiddlewareInterface\n{\n    // Implemente sua lógica aqui\n}\n"
+                "<?php\n\nnamespace MiniRestFramework\Http\Middlewares;\n\n\nclass {$fileName} implements MiddlewareInterface\n{\n    // Implemente sua lógica aqui\n}\n"
             );
         }
 

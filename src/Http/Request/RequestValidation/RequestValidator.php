@@ -1,11 +1,11 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request\RequestValidation;
+namespace MiniRestFramework\Http\Request\RequestValidation;
 
 use \Exception;
-use MiniRest\Framework\Helpers\StatusCode\StatusCode;
-use MiniRest\Framework\Http\Request\Request;
-use MiniRest\Framework\Http\Response\Response;
+use MiniRestFramework\Helpers\StatusCode\StatusCode;
+use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Http\Response\Response;
 
 class RequestValidator
 {

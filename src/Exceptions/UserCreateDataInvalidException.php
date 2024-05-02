@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Exceptions;
+namespace MiniRestFramework\Exceptions;
 
 class UserCreateDataInvalidException extends \Exception
 {

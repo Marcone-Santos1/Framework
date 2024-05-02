@@ -1,15 +1,15 @@
 <?php
 
-namespace MiniRest\Framework\Storage;
+namespace MiniRestFramework\Storage;
 
 use AllowDynamicProperties;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
 use DateTime;
 use Exception;
-use MiniRest\Framework\Exceptions\UploadErrorException;
-use MiniRest\Framework\Storage\Acl\AclInterface;
-use MiniRest\Framework\Storage\Acl\PrivateAcl;
+use MiniRestFramework\Exceptions\UploadErrorException;
+use MiniRestFramework\Storage\Acl\AclInterface;
+use MiniRestFramework\Storage\Acl\PrivateAcl;
 use Ramsey\Uuid\Uuid;
 
 class S3Storage extends Storage

@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request;
+namespace MiniRestFramework\Http\Request;
 
 class Collection
 {

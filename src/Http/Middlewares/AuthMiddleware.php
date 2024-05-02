@@ -1,12 +1,12 @@
 <?php
 
-namespace MiniRest\Framework\Http\Middlewares;
+namespace MiniRestFramework\Http\Middlewares;
 
-use MiniRest\Framework\Auth\Auth;
-use MiniRest\Framework\Exceptions\InvalidJWTToken;
-use MiniRest\Framework\Helpers\StatusCode\StatusCode;
-use MiniRest\Framework\Http\Request\Request;
-use MiniRest\Framework\Http\Response\Response;
+use MiniRestFramework\Auth\Auth;
+use MiniRestFramework\Exceptions\InvalidJWTToken;
+use MiniRestFramework\Helpers\StatusCode\StatusCode;
+use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Http\Response\Response;
 
 class AuthMiddleware implements MiddlewareInterface
 {

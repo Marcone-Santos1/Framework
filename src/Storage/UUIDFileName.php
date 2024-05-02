@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Storage;
+namespace MiniRestFramework\Storage;
 
 use Ramsey\Uuid\Uuid;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request\Rules;
+namespace MiniRestFramework\Http\Request\Rules;
 
-use MiniRest\Framework\Http\Request\RequestValidation\ValidationRule;
+use MiniRestFramework\Http\Request\RequestValidation\ValidationRule;
 
 class ArrayRule implements ValidationRule
 {

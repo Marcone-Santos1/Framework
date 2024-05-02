@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Console;
+namespace MiniRestFramework\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

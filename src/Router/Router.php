@@ -1,9 +1,9 @@
 <?php
 
-namespace MiniRest\Framework\Router;
-use MiniRest\Framework\Http\Middlewares\MiddlewarePipeline;
-use MiniRest\Framework\Http\Request\Request;
-use MiniRest\Framework\Http\Response\Response;
+namespace MiniRestFramework\Router;
+use MiniRestFramework\Http\Middlewares\MiddlewarePipeline;
+use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Http\Response\Response;
 
 class Router {
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request\RequestValidation;
+namespace MiniRestFramework\Http\Request\RequestValidation;
 
 use Exception;
-use MiniRest\Framework\Exceptions\RuleNotFound;
+use MiniRestFramework\Exceptions\RuleNotFound;
 
 class ValidationRuleFactory
 {
@@ -12,7 +12,7 @@ class ValidationRuleFactory
      */
     public static function createRule($ruleName): ValidationRule
     {
-        $className =  "MiniRest\Framework\\Http\Request\\Rules\\" .
+        $className =  "MiniRestFramework\\Http\Request\\Rules\\" .
             ucfirst($ruleName) . 'Rule';
 
         if (class_exists($className)) {

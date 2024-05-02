@@ -1,8 +1,8 @@
 <?php
 
-namespace MiniRest\Framework\Exceptions;
+namespace MiniRestFramework\Exceptions;
 
-use MiniRest\Framework\Helpers\StatusCode\StatusCode;
+use MiniRestFramework\Helpers\StatusCode\StatusCode;
 
 class PrestadorNotFoundException extends \Exception
 {

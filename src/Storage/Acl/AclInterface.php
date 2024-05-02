@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Storage\Acl;
+namespace MiniRestFramework\Storage\Acl;
 
 interface AclInterface
 {

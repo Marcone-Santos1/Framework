@@ -2,7 +2,7 @@
     "name": "ms580/mini-rest-framework",
     "autoload": {
         "psr-4": {
-            "MiniRest\\Framework\\": "src/"
+            "MiniRestFramework\\": "src/"
         },
         "files": ["src/Helpers/helpers.php"]
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Exceptions\Validations;
+namespace MiniRestFramework\Exceptions\Validations;
 
 use Exception;
 

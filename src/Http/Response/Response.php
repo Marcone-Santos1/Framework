@@ -1,9 +1,9 @@
 <?php
 
-namespace MiniRest\Framework\Http\Response;
-use MiniRest\Framework\Exceptions\InvalidContentTypeException;
-use MiniRest\Framework\Exceptions\InvalidJsonResponseException;
-use MiniRest\Framework\Helpers\StatusCode\StatusCode;
+namespace MiniRestFramework\Http\Response;
+use MiniRestFramework\Exceptions\InvalidContentTypeException;
+use MiniRestFramework\Exceptions\InvalidJsonResponseException;
+use MiniRestFramework\Helpers\StatusCode\StatusCode;
 
 class Response {
     public static function json(mixed $data, int | StatusCode $status = StatusCode::OK): string|false

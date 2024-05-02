@@ -1,8 +1,8 @@
 <?php
 
-namespace MiniRest\Framework\Core;
-use MiniRest\Framework\Http\Request\Request;
-use MiniRest\Framework\Router\Router;
+namespace MiniRestFramework\Core;
+use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Router\Router;
 
 class App {
     /**

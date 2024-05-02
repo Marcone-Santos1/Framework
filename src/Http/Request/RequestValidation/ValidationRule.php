@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request\RequestValidation;
+namespace MiniRestFramework\Http\Request\RequestValidation;
 
 interface ValidationRule
 {

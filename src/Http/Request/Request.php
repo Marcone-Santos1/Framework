@@ -1,8 +1,8 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request;
+namespace MiniRestFramework\Http\Request;
 
-use MiniRest\Framework\Http\Request\RequestValidation\RequestValidator;
+use MiniRestFramework\Http\Request\RequestValidation\RequestValidator;
 
 class Request extends RequestValidator
 {

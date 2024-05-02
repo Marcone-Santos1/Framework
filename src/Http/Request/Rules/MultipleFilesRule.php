@@ -1,10 +1,10 @@
 <?php
 
-namespace MiniRest\Framework\Http\Request\Rules;
+namespace MiniRestFramework\Http\Request\Rules;
 
-use MiniRest\Framework\Http\Request\RequestValidation\ValidationRule;
-use MiniRest\Framework\Storage\DiskStorage;
-use MiniRest\Framework\Storage\Storage;
+use MiniRestFramework\Http\Request\RequestValidation\ValidationRule;
+use MiniRestFramework\Storage\DiskStorage;
+use MiniRestFramework\Storage\Storage;
 
 class MultipleFilesRule implements ValidationRule
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Helpers\StatusCode;
+namespace MiniRestFramework\Helpers\StatusCode;
 
 class StatusCode
 {

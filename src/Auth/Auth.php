@@ -1,15 +1,15 @@
 <?php
 
-namespace MiniRest\Framework\Auth;
+namespace MiniRestFramework\Auth;
 
 use DomainException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use MiniRest\Framework\Exceptions\AccessNotAllowedException;
-use MiniRest\Framework\Exceptions\InvalidJWTToken;
-use MiniRest\Framework\Exceptions\UserNotFoundException;
-use MiniRest\Framework\Http\Request\Request;
+use MiniRestFramework\Exceptions\AccessNotAllowedException;
+use MiniRestFramework\Exceptions\InvalidJWTToken;
+use MiniRestFramework\Exceptions\UserNotFoundException;
+use MiniRestFramework\Http\Request\Request;
 use UnexpectedValueException;
 
 class Auth

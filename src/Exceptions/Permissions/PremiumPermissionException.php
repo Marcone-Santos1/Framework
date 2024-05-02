@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Exceptions\Permissions;
+namespace MiniRestFramework\Exceptions\Permissions;
 
 use Exception;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace MiniRest\Framework\Database;
+namespace MiniRestFramework\Database;
 use Illuminate\Database\Capsule\Manager as Capsule;
 class DatabaseConnection
 {
