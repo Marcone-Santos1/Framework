@@ -4,9 +4,6 @@
         "psr-4": {
             "MiniRest\\Framework\\": "src/"
         },
-        "classmap": [
-            "src/Models"
-        ],
         "files": ["src/Helpers/helpers.php"]
     },
     "authors": [
