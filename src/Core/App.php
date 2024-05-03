@@ -22,10 +22,6 @@ class App {
             require_once $file;
         }
 
-        $routerFiles = dirname(__DIR__, 2) . '/routers/api.php';
-
-        require_once $routerFiles;
-
         return Router::dispatch(new Request());
     }
 }
