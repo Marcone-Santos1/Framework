@@ -11,7 +11,7 @@ class App {
     public function run(): false|string|null
     {
 
-        $routersPath = dirname(__DIR__, 5) . '/routers/*.php';
+        $routersPath = dirname(__DIR__, 5) . '/routers/';
 
 
         // Obter todos os arquivos de rota da pasta routers
