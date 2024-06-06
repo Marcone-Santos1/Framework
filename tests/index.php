@@ -22,6 +22,11 @@ Route::post('/testClosures/{id}/{isReal}', function (Request $request, $id, $isR
     return Response::json("Received ID: $id");
 }, [ExampleMiddleware::class, ExampleMiddleware2::class]);
 
+
+Route::get('/test/xss', function (Request $request) {
+    return Response::html($request->all()->get('get')['data']);
+});
+
 Route::post('/testWithoutDI', [ExampleController::class, 'testWithoutDI']);
 Route::post('/sayHello', [ExampleController::class, 'testMethod']);
 Route::post('/testParam/{id}', [ExampleController::class, 'testParam']);

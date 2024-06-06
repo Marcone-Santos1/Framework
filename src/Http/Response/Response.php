@@ -43,7 +43,10 @@ class Response
     public static function html(string $html, int|StatusCode $status = StatusCode::OK, array $headers = []): self
     {
         $headers[] = 'Content-Type: text/html';
-        return new self($html, $status, $headers);
+
+        $escapedContent = htmlspecialchars($html, ENT_QUOTES, 'UTF-8');
+
+        return new self($escapedContent, $status, $headers);
     }
 
     public static function text(string $text, int|StatusCode $status = StatusCode::OK, array $headers = []): self
