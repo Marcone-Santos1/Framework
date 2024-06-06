@@ -104,23 +104,34 @@ class Router {
     /**
      * @throws \ReflectionException
      */
-    protected static function executeAction(Request $request, $action, $params, $middlewares = null): void
-    {
+    protected static function executeAction(Request $request, $action, $params, $middlewares = null): void {
         [$controllerClass, $method] = $action;
 
         $controller = self::$container->make($controllerClass);
 
-        [$parameters, $params] = self::reflectionController($controllerClass, $method, $request, $params);
+        $reflectionMethod = new \ReflectionMethod($controllerClass, $method);
+        $methodParameters = $reflectionMethod->getParameters();
+        $resolvedParameters = [];
+
+        foreach ($methodParameters as $param) {
+            $paramType = $param->getType();
+            if ($paramType && $paramType->isBuiltin()) {
+                $paramName = $param->getName();
+                $resolvedParameters[] = $params[$paramName] ?? null;
+            } elseif ($paramType) {
+                $resolvedParameters[] = self::$container->make($paramType->getName());
+            }
+        }
 
         if (!$middlewares) {
-            echo $controller->$method(...$parameters);
+            echo $reflectionMethod->invokeArgs($controller, $resolvedParameters);
             return;
         }
 
         $middlewarePipeline = new MiddlewarePipeline();
         $middlewarePipeline->send($request)->through($middlewares);
-        $middlewarePipeline->then(function ($passable) use ($controller, $method, $parameters) {
-            echo $controller->$method(...$parameters);
+        $middlewarePipeline->then(function ($passable) use ($controller, $reflectionMethod, $resolvedParameters) {
+            echo $reflectionMethod->invokeArgs($controller, $resolvedParameters);
         });
     }
 

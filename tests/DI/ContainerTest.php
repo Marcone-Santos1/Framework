@@ -53,6 +53,13 @@ class ContainerTest extends TestCase
         $this->assertEquals("Hello from ExampleService!", $response);
     }
 
+    public function testCallMethod()
+    {
+        $controller = $this->container->make(ExampleController::class);
+        $response = $this->container->callMethod($controller, 'testMethod');
+        $this->assertEquals("Hello from ExampleService!", $response);
+    }
+
 
     public function testSingletonBehavior()
     {
