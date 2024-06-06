@@ -30,6 +30,7 @@ class MiddlewarePipeline
 
         foreach ($middlewares as $middleware) {
             $next = function ($passable) use ($middleware, $next) {
+
                 return (new $middleware())->handle($passable, $next);
             };
         }

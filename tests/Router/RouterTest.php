@@ -89,4 +89,28 @@ class RouterTest extends TestCase
         // Verificando os resultados
         $this->assertStringContainsString('Received ID: 1', $response['body'], "Expected response body to contain 'Received ID: 1'");
     }
+
+    public function testMiddlewareReceivesRouteParameter() {
+        // Configurando o ambiente de teste
+        $_SERVER['REQUEST_URI'] = '/testParam/1';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+
+        $requestClient = new RequestClient('http://localhost:8000');
+
+        // Definindo os headers e opções para a requisição
+        $headers = ['Accept' => 'application/json'];
+        $options = [
+            'headers' => $headers
+        ];
+
+
+        $num = 2;
+
+        // Enviando a requisição GET para o endpoint /test
+        $response = $requestClient->sendRequest('POST', "/testParam2/$num/true", $options);
+
+        // Verificando os resultados
+        $this->assertEquals("Received ID: $num", $response['body'], "Expected 'id' parameter to be $num");
+    }
 }

@@ -1,14 +1,14 @@
 <?php
 
 namespace MiniRestFramework\Router;
+
 use MiniRestFramework\DI\Container;
 use MiniRestFramework\Http\Middlewares\MiddlewarePipeline;
 use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
 
 class Router {
-
-    public static array $routers = [];
+    public static array $routes = [];
     public static array $groupMiddlewares = [];
     public static Container $container;
 
@@ -23,7 +23,7 @@ class Router {
 
         $mergedMiddlewares = array_merge(self::$groupMiddlewares, $middlewares);
 
-        self::$routers[] = [
+        self::$routes[] = [
             'method' => $method,
             'route' => $pattern, // Padrão regex com parâmetros capturados
             'action' => $action,
@@ -34,7 +34,7 @@ class Router {
     /**
      * @throws \ReflectionException
      */
-    public static function dispatch(Request $request): null|string|false
+    public static function dispatch(Request $request): Response|null
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
@@ -55,20 +55,28 @@ class Router {
 
         $matches = [];
 
-        foreach (self::$routers as $route)
-        {
+        foreach (self::$routes as $route) {
             if ($route['method'] === $method && preg_match($route['route'], $uri, $matches)) {
                 array_shift($matches);
-                $middlewareList = [];
-                if (isset($route['middlewares']) && count($route['middlewares']) > 0) {
 
+                // Adicionando parâmetros da rota ao objeto Request
+                foreach ($matches as $key => $value) {
+                    if (!is_int($key)) {
+                        $request->set($key, $value);
+                    }
+                }
+
+                $request->setRouteParams($matches);
+
+
+                $middlewareList = [];
+                if (count($route['middlewares']) > 0) {
                     foreach ($route['middlewares'] as $middleware) {
                         $middlewareList[] = new $middleware();
                     }
                 }
 
-                self::executeAction($request ,$route['action'], $matches, $middlewareList);
-                return null;
+                return self::executeAction($request , $route['action'], $matches, $middlewareList);
             }
         }
 
@@ -78,7 +86,8 @@ class Router {
     /**
      * @throws \ReflectionException
      */
-    protected static function executeAction(Request $request, $action, $params, $middlewares = null): void {
+    protected static function executeAction(Request $request, $action, $params, $middlewares = null): Response
+    {
         [$controllerClass, $method] = $action;
 
         $controller = self::$container->make($controllerClass);
@@ -98,38 +107,19 @@ class Router {
         }
 
         if (!$middlewares) {
-            echo $reflectionMethod->invokeArgs($controller, $resolvedParameters);
-            return;
+            $response = $reflectionMethod->invokeArgs($controller, $resolvedParameters);
+            return $response instanceof Response ? $response : Response::json($response);
         }
 
         $middlewarePipeline = new MiddlewarePipeline();
         $middlewarePipeline->send($request)->through($middlewares);
-        $middlewarePipeline->then(function ($passable) use ($controller, $reflectionMethod, $resolvedParameters) {
-            echo $reflectionMethod->invokeArgs($controller, $resolvedParameters);
-        });
-    }
-
-    /**
-     * @param mixed $controllerClass
-     * @param mixed $method
-     * @param Request $request
-     * @param $params
-     * @return array
-     * @throws \ReflectionException
-     */
-    protected static function reflectionController(mixed $controllerClass, mixed $method, Request $request, $params): array
-    {
-        $reflectionMethod = new \ReflectionMethod($controllerClass, $method);
-        $parameters = [];
-
-        foreach ($reflectionMethod->getParameters() as $param) {
-            if ($param->getType() && $param->getType()->getName() === Request::class) {
-                $parameters[] = $request;
-            } else {
-                $parameters[] = array_shift($params);
+        return $middlewarePipeline->then(function ($passable) use ($controller, $reflectionMethod, $resolvedParameters) {
+            $response = $reflectionMethod->invokeArgs($controller, $resolvedParameters);
+            if (!$response instanceof Response) {
+                $response = Response::json($response);
             }
-        }
-        return array($parameters, $params);
-    }
+            return $response;
+        });
 
+    }
 }

@@ -17,7 +17,7 @@ class App {
     /**
      * @throws \ReflectionException
      */
-    public function run(): false|string|null
+    public function run()
     {
 
         $routersPath = dirname(__DIR__, 5) . '/routers/';
@@ -31,6 +31,6 @@ class App {
         }
 
         $router = new Router($this->container);
-        return $router::dispatch(new Request());
+        $router::dispatch(new Request())->send();
     }
 }

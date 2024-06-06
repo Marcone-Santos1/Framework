@@ -28,13 +28,13 @@ class RequestClient
             $response = $this->client->send($guzzleRequest, $options);
             return [
                 'status_code' => $response->getStatusCode(),
-                'body' => $response->getBody()->getContents(),
+                'body' => json_decode($response->getBody()->getContents()),
                 'headers' => $response->getHeaders()
             ];
         } catch (RequestException $e) {
             return [
                 'status_code' => $e->getCode(),
-                'body' => $e->getMessage(),
+                'body' => json_decode($e->getMessage()),
                 'headers' => $e->getResponse() ? $e->getResponse()->getHeaders() : []
             ];
         }

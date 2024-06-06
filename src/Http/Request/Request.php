@@ -7,13 +7,40 @@ use MiniRestFramework\Http\Request\RequestValidation\RequestValidator;
 class Request extends RequestValidator
 {
 
-    public function get($key, $default = null) {
+    private array $params = [];
+    private array $requestData = [];
+    private array $routeParams = [];
 
-        if (isset($_GET[$key])) {
-            return $_GET[$key];
+    public function __construct()
+    {
+        $this->request = $_REQUEST;
+    }
+
+    public function setRouteParams(array $params): void
+    {
+        $this->routeParams = $params;
+    }
+
+    public function getRouteParams(): array
+    {
+        return $this->routeParams;
+    }
+
+    public function __get($name)
+    {
+        if (isset($this->routeParams[$name])) {
+            return $this->routeParams[$name];
         }
 
-        return $default;
+        return $this->request[$name] ?? null;
+    }
+
+    public function set(string $key, $value): void {
+        $this->params[$key] = $value;
+    }
+
+    public function get(string $key, $default = null) {
+        return $this->params[$key] ?? $this->requestData[$key] ?? $default;
     }
 
     public function post($key, $default = null) {

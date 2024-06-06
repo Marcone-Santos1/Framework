@@ -20,22 +20,22 @@ class ExampleController
 
     public function getService()
     {
-        return $this->service;
+        return Response::json($this->service);
     }
 
     public function getTestService()
     {
-        return $this->testService;
+        return Response::json($this->testService);
     }
 
     public function handleRequest()
     {
-        return $this->service->doSomething();
+        return Response::json($this->service->doSomething());
     }
 
     public function testWithoutDI()
     {
-        return 'testWithoutDI';
+        return Response::json('testWithoutDI');
     }
 
     public function handleRequestTest()
@@ -43,22 +43,24 @@ class ExampleController
         return Response::json($this->service->getRepository()->getExamples());
     }
 
-    public function testMethod(ExampleService $exampleService): string {
-        return $exampleService->sayHello();
-    }
-
-    public function testParam(int $id, ExampleService $exampleService, ExampleService $exampleService1): bool|string
+    public function testMethod(ExampleService $exampleService): Response
     {
-        return "Received ID: $id";
+        return Response::json($exampleService->sayHello());
     }
 
-    public function testParam2(int $id, bool $isReal, ExampleService $exampleService, ExampleService $exampleService1): bool|string
+    public function testParam(int $id, ExampleService $exampleService, ExampleService $exampleService1): Response
+    {
+        return Response::json("Received ID: $id");
+    }
+
+    public function testParam2(int $id, bool $isReal, ExampleService $exampleService, ExampleService $exampleService1): Response
     {
         return Response::json([$id, $isReal, $exampleService->sayHello(), $exampleService1->sayHello()]);
     }
 
 
-    public function index(): string {
-        return $this->service->sayHello();
+    public function index(): Response
+    {
+        return Response::json($this->service->sayHello());
     }
 }
