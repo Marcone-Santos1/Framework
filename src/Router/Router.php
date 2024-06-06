@@ -7,45 +7,19 @@ use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
 
 class Router {
-    private const METHOD_GET = 'GET';
-    private const METHOD_POST = 'POST';
-    private const METHOD_PUT = 'PUT';
-    private const METHOD_PATCH = 'PATCH';
-    private const METHOD_DELETE = 'DELETE';
 
     public static array $routers = [];
-    private static array $groupMiddlewares = [];
-    private static mixed $prefix = '';
-    private static Container $container;
+    public static array $groupMiddlewares = [];
+    public static Container $container;
 
     public function __construct(Container $container)
     {
         self::$container = $container;
     }
 
-    public static function get($uri, $action, $middleware = []){
-        self::add(Router::METHOD_GET, $uri, $action, $middleware);
-    }
-
-    public static function post($uri, $action, $middleware = []) {
-        self::add(Router::METHOD_POST, $uri, $action, $middleware);
-    }
-
-    public static function put($uri, $action, $middleware = []) {
-        self::add(Router::METHOD_PUT, $uri, $action, $middleware);
-    }
-
-    public static function delete($uri, $action, $middleware = []) {
-        self::add(Router::METHOD_DELETE, $uri, $action, $middleware);
-    }
-
-    public static function patch($uri, $action, $middleware = []) {
-        self::add(Router::METHOD_PATCH, $uri, $action, $middleware);
-    }
-
-    private static function add($method, $route, $action, $middlewares = []): void
+    public static function add($method, $route, $action, $prefix = '', $middlewares = []): void
     {
-        $pattern = '#^' . preg_replace('/\{([a-zA-Z0-9_]+)\??\}/', '(?P<$1>[^/]+)?', self::$prefix . $route) . '$#';
+        $pattern = '#^' . preg_replace('/\{([a-zA-Z0-9_]+)\??\}/', '(?P<$1>[^/]+)?', $prefix . $route) . '$#';
 
         $mergedMiddlewares = array_merge(self::$groupMiddlewares, $middlewares);
 
@@ -156,22 +130,6 @@ class Router {
             }
         }
         return array($parameters, $params);
-    }
-
-    public static function prefix($prefix): Router
-    {
-        self::$prefix = $prefix;
-        return new Router(self::$container);
-    }
-
-    public function group($middlewares, $callback): void
-    {
-
-        $groupMiddlewares = is_array($middlewares) ? $middlewares : [$middlewares];
-        self::$groupMiddlewares = array_merge(self::$groupMiddlewares, $groupMiddlewares);
-        $callback();
-        self::$groupMiddlewares = array_diff(self::$groupMiddlewares, $groupMiddlewares);
-        self::$prefix = '';
     }
 
 }
