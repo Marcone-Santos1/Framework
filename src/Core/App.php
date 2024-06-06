@@ -1,10 +1,19 @@
 <?php
 
 namespace MiniRestFramework\Core;
+use MiniRestFramework\DI\Container;
 use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Router\Router;
 
 class App {
+    private Container $container;
+
+    public function __construct()
+    {
+        $this->container = new Container();
+    }
+
+
     /**
      * @throws \ReflectionException
      */
@@ -12,7 +21,6 @@ class App {
     {
 
         $routersPath = dirname(__DIR__, 5) . '/routers/';
-
 
         // Obter todos os arquivos de rota da pasta routers
         $routerFiles = glob($routersPath . '*.php');
@@ -22,6 +30,7 @@ class App {
             require_once $file;
         }
 
-        return Router::dispatch(new Request());
+        $router = new Router($this->container);
+        return $router::dispatch(new Request());
     }
 }

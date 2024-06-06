@@ -5,6 +5,11 @@
             "MiniRestFramework\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "MiniRestFramework\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Marcone Santos",
@@ -26,7 +31,7 @@
         "cboden/ratchet": "^0.4.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.3"
+        "phpunit/phpunit": "^10.5"
     },
     "scripts": {
 

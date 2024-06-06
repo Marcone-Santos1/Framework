@@ -1,24 +1,26 @@
 <?php
 
 namespace MiniRestFramework\Router;
+use MiniRestFramework\DI\Container;
 use MiniRestFramework\Http\Middlewares\MiddlewarePipeline;
 use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
 
 class Router {
-
     private const METHOD_GET = 'GET';
     private const METHOD_POST = 'POST';
     private const METHOD_PUT = 'PUT';
     private const METHOD_PATCH = 'PATCH';
     private const METHOD_DELETE = 'DELETE';
 
-    protected static array $routers = [];
+    public static array $routers = [];
     private static array $groupMiddlewares = [];
     private static mixed $prefix = '';
+    private static Container $container;
 
-    public function __construct()
+    public function __construct(Container $container)
     {
+        self::$container = $container;
     }
 
     public static function get($uri, $action, $middleware = []){
@@ -106,7 +108,7 @@ class Router {
     {
         [$controllerClass, $method] = $action;
 
-        $controller = new $controllerClass();
+        $controller = self::$container->make($controllerClass);
 
         [$parameters, $params] = self::reflectionController($controllerClass, $method, $request, $params);
 
@@ -148,7 +150,7 @@ class Router {
     public static function prefix($prefix): Router
     {
         self::$prefix = $prefix;
-        return new Router();
+        return new Router(self::$container);
     }
 
     public function group($middlewares, $callback): void

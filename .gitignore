@@ -6,6 +6,8 @@
 # ENV
 .env
 
+.phpunit.*
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db
