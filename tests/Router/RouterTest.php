@@ -113,4 +113,28 @@ class RouterTest extends TestCase
         // Verificando os resultados
         $this->assertEquals("Received ID: $num", $response['body'], "Expected 'id' parameter to be $num");
     }
+
+    public function testMiddlewareReceivesRouteParameterClosures() {
+        // Configurando o ambiente de teste
+        $_SERVER['REQUEST_URI'] = '/testClosures/2/true';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+
+        $requestClient = new RequestClient('http://localhost:8000');
+
+        // Definindo os headers e opções para a requisição
+        $headers = ['Accept' => 'application/json'];
+        $options = [
+            'headers' => $headers
+        ];
+
+
+        $num = 2;
+
+        // Enviando a requisição GET para o endpoint /test
+        $response = $requestClient->sendRequest('POST', "/testClosures/$num/true", $options);
+
+        // Verificando os resultados
+        $this->assertEquals("Received ID: $num", $response['body'], "Expected 'id' parameter to be $num");
+    }
 }

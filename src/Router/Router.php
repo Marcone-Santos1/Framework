@@ -83,11 +83,34 @@ class Router {
         return Response::notFound();
     }
 
+    protected static function handleClosure(Request $request, callable $closure, $middlewares = null)
+    {
+        if ($middlewares) {
+            $middlewarePipeline = new MiddlewarePipeline();
+            $middlewarePipeline->send($request)->through($middlewares);
+            return $middlewarePipeline->then(function ($passable) use ($request, $closure) {
+                $params = array_merge($request->getRouteParams(), (array)$request->all());
+                $response = call_user_func_array($closure, [$request, ...array_values($params)]);
+                return $response instanceof Response ? $response : Response::json($response);
+            });
+        }
+        $params = array_merge($request->getRouteParams(), (array)$request->all());
+        $response = call_user_func_array($closure, [$request, ...array_values($params)]);
+        return $response instanceof Response ? $response : Response::json($response);
+    }
+
+
+
     /**
      * @throws \ReflectionException
      */
     protected static function executeAction(Request $request, $action, $params, $middlewares = null): Response
     {
+
+        if (is_callable($action)) {
+            return self::handleClosure($request, $action, $middlewares);
+        }
+
         [$controllerClass, $method] = $action;
 
         $controller = self::$container->make($controllerClass);
