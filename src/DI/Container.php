@@ -9,13 +9,16 @@ class Container {
     /**
      * Resolve uma instância do serviço solicitado.
      *
-     * @param string|object $abstract A interface ou classe a ser resolvida.
+     * @param object|string $abstract A interface ou classe a ser resolvida.
      * @return mixed A instância resolvida.
      * @throws \Exception Se o serviço não for encontrado ou não puder ser instanciado.
      */
-    public function make($abstract) {
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
+    public function make($abstract)
+    {
+        $key = is_object($abstract) ? spl_object_hash($abstract) : $abstract;
+
+        if (isset($this->instances[$key])) {
+            return $this->instances[$key];
         }
 
         if (is_string($abstract)) {
@@ -35,14 +38,14 @@ class Container {
 
         $constructor = $reflection->getConstructor();
         if (!$constructor) {
-            return $this->instances[$abstract] = $reflection->newInstance();
+            return $this->instances[$key] = $reflection->newInstance();
         }
 
         $parameters = $constructor->getParameters();
         $dependencies = [];
 
         foreach ($parameters as $param) {
-            $dependencyClass = $param->getType() ? $param->getType()->getName() : null;
+            $dependencyClass = $param->getType()?->getName();
             if ($dependencyClass) {
                 $dependencies[] = $this->make($dependencyClass);
             } else {
@@ -50,7 +53,7 @@ class Container {
             }
         }
 
-        return $this->instances[$abstract] = $reflection->newInstanceArgs($dependencies);
+        return $this->instances[$key] = $reflection->newInstanceArgs($dependencies);
     }
 
     /**

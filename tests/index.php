@@ -31,6 +31,10 @@ Route::prefix('/api')->group([], function () {
     Route::post('/test', [ExampleController::class, 'handleRequest']);
 });
 
+Route::prefix('/test')->group([], function () {
+    Route::post('/test1', [ExampleController::class, 'handleRequest']);
+});
+
 //var_dump(\MiniRestFramework\Router\Router::$routes);
 
 $app->run();

@@ -3,6 +3,7 @@
 namespace MiniRestFramework\Core;
 use MiniRestFramework\DI\Container;
 use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Router\ActionDispatcher;
 use MiniRestFramework\Router\Router;
 
 class App {
@@ -29,8 +30,9 @@ class App {
         foreach ($routerFiles as $file) {
             require_once $file;
         }
+        $actionDispatcher = new ActionDispatcher($this->container);
 
-        $router = new Router($this->container);
-        $router::dispatch(new Request())->send();
+        $router = new Router($actionDispatcher);
+        $router->dispatch(new Request())->send();
     }
 }

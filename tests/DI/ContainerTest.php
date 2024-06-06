@@ -3,8 +3,10 @@
 namespace MiniRestFramework\Tests\DI;
 
 use MiniRestFramework\DI\Container;
+use MiniRestFramework\Http\Request\Request;
+use MiniRestFramework\Tests\Objects\NonInstantiableClass;
 use PHPUnit\Framework\TestCase;
-use MiniRestFramework\Tests\Objects\ExampleController;
+use MiniRestFramework\Tests\Objects\ExampleAction;
 use MiniRestFramework\Tests\Objects\ExampleRepository;
 use MiniRestFramework\Tests\Objects\ExampleService;
 
@@ -21,10 +23,10 @@ class ContainerTest extends TestCase
     public function testAutoResolving() {
 
         // Exemplo de classe que deve ser resolvida automaticamente
-        $exampleController = $this->container->make(ExampleController::class);
+        $exampleController = $this->container->make(ExampleAction::class);
         $exampleService = $this->container->make(ExampleService::class);
 
-        $this->assertInstanceOf(ExampleController::class, $exampleController);
+        $this->assertInstanceOf(ExampleAction::class, $exampleController);
         $this->assertInstanceOf(ExampleService::class, $exampleService);
         $this->assertInstanceOf(ExampleService::class, $exampleController->getService());
         $this->assertInstanceOf(ExampleService::class, $exampleController->getTestService());
@@ -39,23 +41,44 @@ class ContainerTest extends TestCase
         $this->assertEquals("Hello from ExampleService!", $service->sayHello());
     }
 
-    public function testExampleControllerIsResolved()
+    public function testClassNotExistsException()
     {
-        $controller = $this->container->make(ExampleController::class);
-        $this->assertInstanceOf(ExampleController::class, $controller);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Class \MiniRestFramework\Tests\Objects\ExampleService1 not found.');
+
+        $service = $this->container->make('\MiniRestFramework\Tests\Objects\ExampleService1');
+        $this->assertNotInstanceOf(ExampleService::class, $service);
+
+    }
+
+
+    public function testStringClassDoesNotExist()
+    {
+        $className = 'NonExistentClass';
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Class {$className} not found.");
+
+        $this->container->make($className);
+    }
+
+    public function testExampleActionIsResolved()
+    {
+        $controller = $this->container->make(ExampleAction::class);
+        $this->assertInstanceOf(ExampleAction::class, $controller);
         $this->assertInstanceOf(ExampleService::class, $controller->getService());
     }
 
     public function testControllerIndexMethod()
     {
-        $controller = $this->container->make(ExampleController::class);
+        $controller = $this->container->make(ExampleAction::class);
         $response = $controller->index();
         $this->assertEquals("Hello from ExampleService!", $response);
     }
 
     public function testCallMethod()
     {
-        $controller = $this->container->make(ExampleController::class);
+        $controller = $this->container->make(ExampleAction::class);
         $response = $this->container->callMethod($controller, 'testMethod');
         $this->assertEquals("Hello from ExampleService!", $response);
     }
@@ -67,5 +90,28 @@ class ContainerTest extends TestCase
         $service2 = $this->container->make(ExampleService::class);
         $this->assertSame($service1, $service2);
     }
+
+
+    public function testMakeWithInvalidType()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Invalid type provided for make method.");
+        $this->container->make(12345); // Passando um tipo inválido
+    }
+
+    public function testMakeClassNotInstantiable()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Class MiniRestFramework\Tests\Objects\NonInstantiableClass cannot be instantiated.");
+        $this->container->make(NonInstantiableClass::class);
+    }
+
+    public function testMakeObject()
+    {
+        $request = new Request();
+        $instance = $this->container->make($request);
+        $this->assertInstanceOf(Request::class, $instance);
+    }
+
 
 }

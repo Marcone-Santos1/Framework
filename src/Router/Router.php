@@ -2,19 +2,18 @@
 
 namespace MiniRestFramework\Router;
 
-use MiniRestFramework\DI\Container;
-use MiniRestFramework\Http\Middlewares\MiddlewarePipeline;
 use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
 
 class Router {
     public static array $routes = [];
     public static array $groupMiddlewares = [];
-    public static Container $container;
 
-    public function __construct(Container $container)
+    private ActionDispatcher $actionDispatcher;
+
+    public function __construct(ActionDispatcher $actionDispatcher)
     {
-        self::$container = $container;
+        $this->actionDispatcher = $actionDispatcher;
     }
 
     public static function add($method, $route, $action, $prefix = '', $middlewares = []): void
@@ -34,7 +33,7 @@ class Router {
     /**
      * @throws \ReflectionException
      */
-    public static function dispatch(Request $request): Response|null
+    public function dispatch(Request $request): Response|null
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
@@ -76,73 +75,11 @@ class Router {
                     }
                 }
 
-                return self::executeAction($request , $route['action'], $matches, $middlewareList);
+                return $this->actionDispatcher->execute($request, $route['action'], $matches, $middlewareList);
             }
         }
 
         return Response::notFound();
     }
 
-    protected static function handleClosure(Request $request, callable $closure, $middlewares = null)
-    {
-        if ($middlewares) {
-            $middlewarePipeline = new MiddlewarePipeline();
-            $middlewarePipeline->send($request)->through($middlewares);
-            return $middlewarePipeline->then(function ($passable) use ($request, $closure) {
-                $params = array_merge($request->getRouteParams(), (array)$request->all());
-                $response = call_user_func_array($closure, [$request, ...array_values($params)]);
-                return $response instanceof Response ? $response : Response::json($response);
-            });
-        }
-        $params = array_merge($request->getRouteParams(), (array)$request->all());
-        $response = call_user_func_array($closure, [$request, ...array_values($params)]);
-        return $response instanceof Response ? $response : Response::json($response);
-    }
-
-
-
-    /**
-     * @throws \ReflectionException
-     */
-    protected static function executeAction(Request $request, $action, $params, $middlewares = null): Response
-    {
-
-        if (is_callable($action)) {
-            return self::handleClosure($request, $action, $middlewares);
-        }
-
-        [$controllerClass, $method] = $action;
-
-        $controller = self::$container->make($controllerClass);
-
-        $reflectionMethod = new \ReflectionMethod($controllerClass, $method);
-        $methodParameters = $reflectionMethod->getParameters();
-        $resolvedParameters = [];
-
-        foreach ($methodParameters as $param) {
-            $paramType = $param->getType();
-            if ($paramType && $paramType->isBuiltin()) {
-                $paramName = $param->getName();
-                $resolvedParameters[] = $params[$paramName] ?? null;
-            } elseif ($paramType) {
-                $resolvedParameters[] = self::$container->make($paramType->getName());
-            }
-        }
-
-        if (!$middlewares) {
-            $response = $reflectionMethod->invokeArgs($controller, $resolvedParameters);
-            return $response instanceof Response ? $response : Response::json($response);
-        }
-
-        $middlewarePipeline = new MiddlewarePipeline();
-        $middlewarePipeline->send($request)->through($middlewares);
-        return $middlewarePipeline->then(function ($passable) use ($controller, $reflectionMethod, $resolvedParameters) {
-            $response = $reflectionMethod->invokeArgs($controller, $resolvedParameters);
-            if (!$response instanceof Response) {
-                $response = Response::json($response);
-            }
-            return $response;
-        });
-
-    }
 }

@@ -8,6 +8,8 @@
 
 .phpunit.*
 
+coverage-report/*
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db
