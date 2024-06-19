@@ -27,6 +27,15 @@ Route::get('/test/xss', function (Request $request) {
     return Response::html($request->all()->get('get')['data']);
 });
 
+Route::get('/test/view/{nome}', function (Request $request, string $nome) {
+    return Response::html(
+        view('test', [
+            'username' => $nome,
+            'items' => ['Item 10', 'Item 20', 'Item 30', 'Item 40']
+        ], __DIR__ . '/views/')
+    );
+});
+
 Route::post('/testWithoutDI', [ExampleController::class, 'testWithoutDI']);
 Route::post('/sayHello', [ExampleController::class, 'testMethod']);
 Route::post('/testParam/{id}', [ExampleController::class, 'testParam']);

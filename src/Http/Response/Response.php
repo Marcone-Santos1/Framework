@@ -2,6 +2,8 @@
 
 namespace MiniRestFramework\Http\Response;
 
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use MiniRestFramework\Exceptions\InvalidContentTypeException;
 use MiniRestFramework\Helpers\StatusCode\StatusCode;
 
@@ -42,11 +44,17 @@ class Response
 
     public static function html(string $html, int|StatusCode $status = StatusCode::OK, array $headers = []): self
     {
+        // Adiciona o cabeçalho Content-Type para HTML
         $headers[] = 'Content-Type: text/html';
 
-        $escapedContent = htmlspecialchars($html, ENT_QUOTES, 'UTF-8');
+        // Configuração do HTMLPurifier
+        $config = HTMLPurifier_Config::createDefault();
+        $purifier = new HTMLPurifier($config);
 
-        return new self($escapedContent, $status, $headers);
+        // Sanitiza o HTML para evitar XSS e injeção de código
+        $cleanHtml = $purifier->purify($html);
+
+        return new self($cleanHtml, $status, $headers);
     }
 
     public static function text(string $text, int|StatusCode $status = StatusCode::OK, array $headers = []): self
