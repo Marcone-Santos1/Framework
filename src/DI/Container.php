@@ -50,7 +50,9 @@ class Container {
             if ($dependencyClass === 'array') continue;
 
             if ($dependencyClass) {
+
                 $dependencies[] = $this->make($dependencyClass);
+
             } else {
                 throw new \Exception("Unable to resolve dependency for parameter {$param->getName()} in class {$abstract}.");
             }
