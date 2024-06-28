@@ -2,6 +2,7 @@
 
 namespace MiniRestFramework\Tests\Objects;
 
+use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
 
 class ExampleAction
@@ -12,6 +13,7 @@ class ExampleAction
     public function __construct(
         ExampleService $service,
         ExampleService $testService,
+        Request $request
 
     ) {
         $this->service = $service;

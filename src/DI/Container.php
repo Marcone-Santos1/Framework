@@ -46,6 +46,9 @@ class Container {
 
         foreach ($parameters as $param) {
             $dependencyClass = $param->getType()?->getName();
+
+            if ($dependencyClass === 'array') continue;
+
             if ($dependencyClass) {
                 $dependencies[] = $this->make($dependencyClass);
             } else {
