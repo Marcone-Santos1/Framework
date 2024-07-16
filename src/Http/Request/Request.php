@@ -13,12 +13,16 @@ class Request extends RequestValidator
 
     public function __construct()
     {
-        $this->request = $_REQUEST;
     }
 
     public function setRouteParams(array $params): void
     {
         $this->routeParams = $params;
+    }
+
+    public function setRquestParams(): void
+    {
+        $this->requestData = $this->getJsonData();
     }
 
     public function getRouteParams(): array
@@ -28,11 +32,9 @@ class Request extends RequestValidator
 
     public function __get($name)
     {
-        if (isset($this->routeParams[$name])) {
-            return $this->routeParams[$name];
-        }
+        if (!isset($this->routeParams[$name]) && !isset($this->requestData[$name])) return null;
 
-        return $this->request[$name] ?? null;
+        return $this->routeParams[$name] ?? $this->requestData[$name];
     }
 
     public function set(string $key, $value): void {
@@ -60,8 +62,7 @@ class Request extends RequestValidator
     }
 
     public function json($key, $default = null) {
-        $jsonData = file_get_contents('php://input');
-        $data = json_decode($jsonData, true);
+        $data = $this->getJsonData();
 
         if (isset($data[$key])) {
             return $data[$key];

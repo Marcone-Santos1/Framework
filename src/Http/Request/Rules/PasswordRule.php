@@ -9,12 +9,30 @@ class PasswordRule implements ValidationRule
 
     public function passes($value, $params): bool
     {
-        $hasMinLength = strlen($value) >= (int)explode('=',$params[0])[1];
-        $hasAlphaNum = preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])/', $value);
-        $hasNumber = preg_match('/\d/', $value);
-        $hasSpecialChar = preg_match('/[!@#$%^&*(),.?":{}|<>]/', $value);
+        $minLength = $this->getParam($params, 'min_length', 8);
+        $requireUpper = $this->getParam($params, 'require_upper', true);
+        $requireLower = $this->getParam($params, 'require_lower', true);
+        $requireNumber = $this->getParam($params, 'require_number', true);
+        $requireSpecial = $this->getParam($params, 'require_special', true);
 
-        return $hasMinLength && $hasAlphaNum && $hasNumber && $hasSpecialChar;
+        $hasMinLength = strlen($value) >= $minLength;
+        $hasUpper = !$requireUpper || preg_match('/[A-Z]/', $value);
+        $hasLower = !$requireLower || preg_match('/[a-z]/', $value);
+        $hasNumber = !$requireNumber || preg_match('/\d/', $value);
+        $hasSpecial = !$requireSpecial || preg_match('/[!@#$%^&*(),.?":{}|<>]/', $value);
+
+        return $hasMinLength && $hasUpper && $hasLower && $hasNumber && $hasSpecial;
+    }
+
+    private function getParam($params, $key, $default)
+    {
+        foreach ($params as $param) {
+            list($paramKey, $paramValue) = explode('=', $param);
+            if ($paramKey === $key) {
+                return is_bool($default) ? filter_var($paramValue, FILTER_VALIDATE_BOOLEAN) : $paramValue;
+            }
+        }
+        return $default;
     }
 
     public function errorMessage($field, $params): string

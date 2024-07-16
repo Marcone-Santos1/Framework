@@ -66,7 +66,7 @@ class Router {
                 }
 
                 $request->setRouteParams($matches);
-
+                $request->setRquestParams();
 
                 $middlewareList = [];
                 if (count($route['middlewares']) > 0) {

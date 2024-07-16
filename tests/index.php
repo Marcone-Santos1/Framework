@@ -36,6 +36,20 @@ Route::get('/test/view/{nome}', function (Request $request, string $nome) {
     );
 });
 
+Route::post('/test/validation', function (Request $request) {
+
+    $validate = $request->rules([
+        'name' => 'required',
+        'password' => 'password',
+    ]);
+
+    if ($validate->fails()) {
+        return Response::json(['errors' => $request->errors()]);
+    }
+
+    return Response::json(['teste']);
+});
+
 Route::post('/testWithoutDI', [ExampleController::class, 'testWithoutDI']);
 Route::post('/sayHello', [ExampleController::class, 'testMethod']);
 Route::post('/testParam/{id}', [ExampleController::class, 'testParam']);

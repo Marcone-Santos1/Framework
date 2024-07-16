@@ -6,6 +6,7 @@ use \Exception;
 use MiniRestFramework\Helpers\StatusCode\StatusCode;
 use MiniRestFramework\Http\Request\Request;
 use MiniRestFramework\Http\Response\Response;
+use function Symfony\Component\Translation\t;
 
 class RequestValidator
 {
@@ -44,7 +45,7 @@ class RequestValidator
         return [$ruleName, $ruleParams];
     }
 
-    public function validate(string $objectType = 'json') : bool
+    public function validate(string $objectType = 'json') : RequestValidator
     {
         $this->objectType = $objectType;
 
@@ -61,25 +62,34 @@ class RequestValidator
             foreach ($rules as $rule) {
                 if (!$rule['rule']->passes($data[$field], $rule['params'])) {
                     $errorMessage = $rule['rule']->errorMessage($field, $rule['params']);
-                    $this->errorMessages[$field][] = $errorMessage;
+                    $this->addError($field, $errorMessage);
                 }
             }
         }
 
-        if (count($this->errorMessages) > 0) return false;
-
-        return true;
+        return $this;
     }
 
-    public function errors(): void
+    public function addError(string $field, string $errorMessage): void
     {
-        if (!$this->validate($this->objectType) && count($this->errorMessages) > 0) {
-            $erro = [];
-            foreach ($this->errorMessages as $item){
-                $erro[] = $item[0];
-            }
-            Response::json(['error' => ['message' => $erro]], StatusCode::REQUEST_ERROR);
-            return;
+        $this->errorMessages[$field][] = $errorMessage;
+    }
+
+    public function errors(): array
+    {
+        if (count($this->errorMessages) <= 0) return [];
+
+        $errors = [];
+        foreach ($this->errorMessages as $item){
+            $errors[] = $item[0];
         }
+
+        return $errors;
+    }
+
+    public function fails(): bool
+    {
+        $this->validate($this->objectType ?? 'json');
+        return count($this->errors()) > 0;
     }
 }
